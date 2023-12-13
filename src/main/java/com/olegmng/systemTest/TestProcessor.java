@@ -60,10 +60,11 @@ public class TestProcessor {
 
             }
         }
-//        list.stream()
-//                .sorted()
-//                .forEach(System.out::println);
-
+        //реализуем сортировку по параметру order() в анотации @Test с помощью stream
+        list.stream()
+                .sorted((o1, o2)
+                -> Integer.compare(o1.getAnnotation(Test.class).order(), o2.getAnnotation(Test.class).order()))
+                .forEach(System.out::println);
 
         list.sort(new Comparator<Method>() {
             @Override
@@ -101,4 +102,5 @@ public class TestProcessor {
 
         }
     }
+
 }
