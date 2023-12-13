@@ -3,9 +3,7 @@ package com.olegmng.systemTest;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 
 public class TestProcessor {
     record MyRecord(int x, int y) {
@@ -25,9 +23,9 @@ public class TestProcessor {
         boolean flagAft = false;
 
         Method methodAft = null;
-        
+
         final Constructor<?> declaredConstructor;
-        
+
         try {
             declaredConstructor = testClass.getDeclaredConstructor();
         } catch (NoSuchMethodException e) {
@@ -42,21 +40,43 @@ public class TestProcessor {
         }
         List<Method> list = new ArrayList<>();
         for (Method method : testClass.getDeclaredMethods()) {
+            //добавляем условие для поиска метода с аннотацией @BeforeEach для запуска в первую очередь
             if (method.isAnnotationPresent(BeforeEach.class)) {
                 runTestR(method, testObj);
             }
             if (method.isAnnotationPresent(Test.class)) {
+                //получаем параметр int для аннотации Test
+                Test annoParam = method.getAnnotation(Test.class);
+                System.out.println(annoParam.order());
+
                 checkTestMethod(method);
                 list.add(method);
 
             }
+            //добавляем условие для поиска метода с аннотацией @AfterEach - фиксируем метод если он есть и ставим флаг flagAft
             if (method.isAnnotationPresent(AfterEach.class)) {
                 flagAft = true;
                 methodAft = method;
 
             }
         }
+//        list.stream()
+//                .sorted()
+//                .forEach(System.out::println);
+
+
+        list.sort(new Comparator<Method>() {
+            @Override
+            public int compare(Method o1, Method o2) {
+                if (o1.getAnnotation(Test.class).order() < o2.getAnnotation(Test.class).order()) return -1;
+                else if (o1.getAnnotation(Test.class).order() > o2.getAnnotation(Test.class).order()) return 1;
+                return 0;
+            }
+        });
+
         list.forEach(it -> runTestR(it, testObj));
+
+        // анализируем флаг flagAft после запуска всех методов
         if (flagAft) {
             runTestR(methodAft, testObj);
 

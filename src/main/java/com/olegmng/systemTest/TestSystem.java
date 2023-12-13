@@ -18,28 +18,35 @@ public class TestSystem {
 
     }
 
-    static class MyTest{
+    static class MyTest {
 
-        @Test
-        public void firstTest(){
+        @Test(order = 11)
+        public void firstTest() {
             System.out.println("firstTest() запущен");
 
         }
-        @Test
-        public void secondTest(){
+
+        @Test(order = 5)
+        public void secondTest() {
             System.out.println("secondTest() запущен");
 
         }
 
         @BeforeEach
-        public void beforeTest(){
+        public void beforeTest() {
             System.out.println("beforeTest() запущен");
 
         }
 
         @AfterEach
-        public void afterTest(){
+        public void afterTest() {
             System.out.println("afterTest() запущен");
+
+        }
+
+        @Test(order = 3)
+        public void thirdTest() {
+            System.out.println("thirdTest() запущен");
 
         }
     }

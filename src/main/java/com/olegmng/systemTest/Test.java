@@ -9,4 +9,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 
 public @interface Test {
+    //добавляем параметр order() со значением 0 по умолчанию
+    int order() default 0;
+
 }
