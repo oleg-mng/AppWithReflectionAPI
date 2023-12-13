@@ -49,6 +49,12 @@ public class TestSystem {
             System.out.println("thirdTest() запущен");
 
         }
+        @Test(order = 13)
+        @Skip
+        public void thirteenTest() {
+            System.out.println("thirteenTest() запущен");
+
+        }
 
     }
 

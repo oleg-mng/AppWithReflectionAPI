@@ -53,6 +53,10 @@ public class TestProcessor {
                 list.add(method);
 
             }
+            //реализация не запуска метода с аннотацией @Skip
+            if (method.isAnnotationPresent(Skip.class)){
+                list.remove(method);
+            }
             //добавляем условие для поиска метода с аннотацией @AfterEach - фиксируем метод если он есть и ставим флаг flagAft
             if (method.isAnnotationPresent(AfterEach.class)) {
                 flagAft = true;
