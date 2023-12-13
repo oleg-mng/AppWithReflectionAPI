@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class TestProcessor {
-    record MyRecord(int x, int y){
+    record MyRecord(int x, int y) {
 
     }
 
@@ -22,7 +22,12 @@ public class TestProcessor {
     // находит все void методы без аргументов в классе и запускает их
     // для запуска создается тестовый объект с помощью конструктора без аргументов
     public static void runTest(Class<?> testClass) {
+        boolean flagAft = false;
+
+        Method methodAft = null;
+        
         final Constructor<?> declaredConstructor;
+        
         try {
             declaredConstructor = testClass.getDeclaredConstructor();
         } catch (NoSuchMethodException e) {
@@ -37,13 +42,25 @@ public class TestProcessor {
         }
         List<Method> list = new ArrayList<>();
         for (Method method : testClass.getDeclaredMethods()) {
+            if (method.isAnnotationPresent(BeforeEach.class)) {
+                runTestR(method, testObj);
+            }
             if (method.isAnnotationPresent(Test.class)) {
                 checkTestMethod(method);
                 list.add(method);
 
             }
+            if (method.isAnnotationPresent(AfterEach.class)) {
+                flagAft = true;
+                methodAft = method;
+
+            }
         }
         list.forEach(it -> runTestR(it, testObj));
+        if (flagAft) {
+            runTestR(methodAft, testObj);
+
+        }
 
     }
 
